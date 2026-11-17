@@ -10,6 +10,7 @@ from playwright.sync_api import sync_playwright
 
 src, durf, out = sys.argv[1:4]
 html = open(src, encoding="utf-8").read().replace("__DUR__", json.dumps(json.load(open(durf))))
+os.makedirs(os.path.dirname(os.path.abspath(out)), exist_ok=True)
 open(out, "w", encoding="utf-8").write(html)
 with sync_playwright() as p:
     b = p.chromium.launch(); pg = b.new_page(viewport={"width": 1920, "height": 1080})
