@@ -1,0 +1,8 @@
+_work/
+vo/
+tts/
+*.mp4
+*.wav
+*.part.mp4
+peek_*.jpg
+__pycache__/

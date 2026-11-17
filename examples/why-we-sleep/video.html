@@ -1,0 +1,286 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><style>
+html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:#12253A}
+text{font-family:Poppins,sans-serif;font-weight:700}
+</style></head><body>
+<svg id="s" width="1920" height="1080" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+<defs>
+ <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1A1236"/><stop offset="1" stop-color="#3A3296"/></linearGradient>
+ <linearGradient id="skyDeep" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0E1C2D"/><stop offset="1" stop-color="#162B36"/></linearGradient>
+ <linearGradient id="skyRed" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#290D1C"/><stop offset="1" stop-color="#5B1F3A"/></linearGradient>
+ <radialGradient id="glow"><stop offset="0" stop-color="#FFF8D8"/><stop offset=".35" stop-color="#FFE4AF" stop-opacity=".55"/><stop offset="1" stop-color="#FFE4AF" stop-opacity="0"/></radialGradient>
+ <radialGradient id="glowC"><stop offset="0" stop-color="#C8FBFF"/><stop offset=".4" stop-color="#33F5FF" stop-opacity=".45"/><stop offset="1" stop-color="#33F5FF" stop-opacity="0"/></radialGradient>
+ <radialGradient id="glowY"><stop offset="0" stop-color="#FFFFE0"/><stop offset=".45" stop-color="#FFFF47" stop-opacity=".8"/><stop offset="1" stop-color="#FFB42D" stop-opacity="0"/></radialGradient>
+ <radialGradient id="vign"><stop offset=".55" stop-color="#FF0040" stop-opacity="0"/><stop offset="1" stop-color="#FF0040" stop-opacity=".55"/></radialGradient>
+ <linearGradient id="charG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F79BFF"/><stop offset="1" stop-color="#9246F8"/></linearGradient>
+ <linearGradient id="brainG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFB9D4"/><stop offset="1" stop-color="#F0437E"/></linearGradient>
+ <linearGradient id="brainN" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9FA8FF"/><stop offset="1" stop-color="#4B3FC0"/></linearGradient>
+ <linearGradient id="cellG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7FF8FF"/><stop offset="1" stop-color="#0091C4"/></linearGradient>
+ <linearGradient id="junkG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#C77DFF"/><stop offset="1" stop-color="#5B1A8F"/></linearGradient>
+ <linearGradient id="planetG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#83F96F"/><stop offset="1" stop-color="#01A86A"/></linearGradient>
+ <linearGradient id="moonG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFFBEA"/><stop offset="1" stop-color="#FFCE85"/></linearGradient>
+ <linearGradient id="segDay" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFE9A8"/><stop offset="1" stop-color="#FFB42D"/></linearGradient>
+ <linearGradient id="segNight" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9FA8FF"/><stop offset="1" stop-color="#4B3FC0"/></linearGradient>
+ <linearGradient id="cloudG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#B3EBFF"/></linearGradient>
+ <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFFF9A"/><stop offset="1" stop-color="#FFB42D"/></linearGradient>
+ <linearGradient id="grey" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#B9B9D6"/><stop offset="1" stop-color="#5D5D6B"/></linearGradient>
+ <linearGradient id="boxG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5759B9"/><stop offset="1" stop-color="#232453"/></linearGradient>
+</defs>
+<g id="root"></g>
+</svg>
+<script>
+// ---------- helpers ----------
+const E={lin:t=>t,out:t=>1-(1-t)**3,in:t=>t**3,inOut:t=>t<.5?4*t**3:1-(-2*t+2)**3/2,
+ outBack:t=>{const c=1.7;return 1+(c+1)*(t-1)**3+c*(t-1)**2}};
+const cl=v=>Math.min(1,Math.max(0,v));
+const k=(t,a,b,e='inOut')=>E[e](cl((t-a)/(b-a)));
+const lerp=(a,b,p)=>a+(b-a)*p;
+const rng=s=>()=>(s=(s*16807)%2147483647)/2147483647;
+const $=id=>document.getElementById(id);
+const set=(el,o)=>{for(const a in o)el.setAttribute(a,o[a])};
+const tf=(el,x,y,s=1,r=0)=>el.setAttribute('transform',`translate(${x} ${y}) rotate(${r}) scale(${s})`);
+const pop=(el,t,a,x,y,d=.55,s0=1)=>{const p=k(t,a,a+d,'outBack');el.setAttribute('opacity',cl(p*2));tf(el,x,y,Math.max(0.001,p*s0));return p};
+const mixC=(a,b,p)=>{const h=c=>[1,3,5].map(i=>parseInt(c.slice(i,i+2),16));const A=h(a),B=h(b);return '#'+A.map((v,i)=>Math.round(lerp(v,B[i],p)).toString(16).padStart(2,'0')).join('')};
+
+// ---------- reusable art ----------
+function starsSVG(id,n,seed,h=1080){const R=rng(seed);let s=`<g id="${id}">`;for(let i=0;i<n;i++){const x=R()*1920,y=R()*h,r=1+R()*2.6;
+ if(R()<.12)s+=`<path data-ph="${R()*6.28}" transform="translate(${x} ${y})" d="M0 -12 Q2 -2 12 0 Q2 2 0 12 Q-2 2 -12 0 Q-2 -2 0 -12Z" fill="#FFF8D8"/>`;
+ else s+=`<circle data-ph="${R()*6.28}" cx="${x}" cy="${y}" r="${r}" fill="#fff"/>`}return s+'</g>'}
+function twinkle(id,t){for(const c of $(id).children)c.setAttribute('opacity',.35+.65*Math.abs(Math.sin(t*1.6+ +c.dataset.ph)))}
+// character: blob with eyes. parts: id_b body, id_eo (open eyes group), id_ec (closed eyes), id_m mouth
+function charSVG(id,extra=''){return `<g id="${id}"><g id="${id}_b">
+ <ellipse cx="0" cy="18" rx="105" ry="22" fill="#000" opacity=".18"/>
+ <path d="M-95 0 C-95 -120 95 -120 95 0 C95 20 60 18 0 18 C-60 18 -95 20 -95 0Z" fill="url(#charG)"/>
+ <ellipse cx="-45" cy="-70" rx="22" ry="12" fill="#fff" opacity=".35" transform="rotate(-30 -45 -70)"/>
+ <ellipse cx="-62" cy="-18" rx="14" ry="8" fill="#FF6FB0" opacity=".5"/><ellipse cx="62" cy="-18" rx="14" ry="8" fill="#FF6FB0" opacity=".5"/>
+ <g id="${id}_eo"><g id="${id}_eL" transform="translate(-32 -48)"><ellipse rx="20" ry="24" fill="#fff"/><circle cx="3" cy="3" r="11" fill="#1F004E"/><circle cx="7" cy="-3" r="4" fill="#fff"/></g>
+ <g id="${id}_eR" transform="translate(32 -48)"><ellipse rx="20" ry="24" fill="#fff"/><circle cx="3" cy="3" r="11" fill="#1F004E"/><circle cx="7" cy="-3" r="4" fill="#fff"/></g></g>
+ <g id="${id}_ec" opacity="0" stroke="#1F004E" stroke-width="6" fill="none" stroke-linecap="round"><path d="M-50 -46 Q-32 -32 -14 -46"/><path d="M14 -46 Q32 -32 50 -46"/></g>
+ <ellipse id="${id}_m" cx="0" cy="-16" rx="10" ry="5" fill="#5B0030"/>${extra}</g></g>`}
+// state: open (0..1 eyelid), asleep bool, breathe
+function charPose(id,t,{x,y,s=1,asleep=false,open=1,blink=true,mouth=5,rot=0}){
+ const br=1+0.025*Math.sin(t*2.4);tf($(id),x,y,s,rot);
+ $(id+'_b').setAttribute('transform',`scale(${1/br**.5} ${br})`);
+ let o=open; if(blink&&!asleep){const ph=(t%3.1);if(ph<.14)o*=Math.abs(ph-.07)/.07}
+ $(id+'_eo').setAttribute('opacity',asleep?0:1);$(id+'_ec').setAttribute('opacity',asleep?1:0);
+ for(const e of ['_eL','_eR']){const g=$(id+e);const tx=e=='_eL'?-32:32;g.setAttribute('transform',`translate(${tx} -48) scale(1 ${Math.max(.06,o)})`)}
+ $(id+'_m').setAttribute('ry',mouth);
+}
+function zzzSVG(id){return `<g id="${id}">`+[0,1,2].map(i=>`<text id="${id}${i}" font-size="${40+i*14}" fill="#E1F8FF">z</text>`).join('')+'</g>'}
+function zzz(id,t,x,y){for(let i=0;i<3;i++){const p=((t*0.45+i/3)%1);const el=$(id+i);set(el,{x:x+p*90+Math.sin(p*6)*14,y:y-p*170,opacity:Math.sin(p*Math.PI)})}}
+function brainSVG(id,fill){return `<g id="${id}">
+ <rect x="-40" y="150" width="80" height="110" rx="34" fill="${fill}" opacity=".9"/>
+ <ellipse cx="-140" cy="-10" rx="210" ry="185" fill="${fill}"/><ellipse cx="140" cy="-10" rx="210" ry="185" fill="${fill}"/>
+ <ellipse cx="0" cy="-90" rx="250" ry="150" fill="${fill}"/><ellipse cx="-70" cy="110" rx="200" ry="110" fill="${fill}"/><ellipse cx="80" cy="110" rx="200" ry="110" fill="${fill}"/>
+ <g stroke="#000" stroke-opacity=".18" stroke-width="12" fill="none" stroke-linecap="round">
+ <path d="M0 -200 C-20 -120 20 -60 0 0 C-20 60 20 120 0 170"/>
+ <path d="M-280 -40 C-220 -90 -180 -20 -120 -70 S-60 -150 -40 -110"/><path d="M-260 70 C-200 30 -160 110 -100 60"/>
+ <path d="M280 -40 C220 -90 180 -20 120 -70 S60 -150 40 -110"/><path d="M260 70 C200 30 160 110 100 60"/>
+ <path d="M-180 -170 C-140 -130 -90 -190 -60 -150"/><path d="M180 -170 C140 -130 90 -190 60 -150"/></g>
+ <ellipse cx="-170" cy="-130" rx="60" ry="24" fill="#fff" opacity=".3" transform="rotate(-25 -170 -130)"/></g>`}
+function cloudSVG(id,s=1){return `<g id="${id}"><g transform="scale(${s})"><ellipse cx="0" cy="20" rx="210" ry="60" fill="url(#cloudG)"/><circle cx="-90" cy="-10" r="80" fill="url(#cloudG)"/><circle cx="30" cy="-40" r="105" fill="url(#cloudG)"/><circle cx="130" cy="0" r="70" fill="url(#cloudG)"/><ellipse cx="-20" cy="-90" rx="40" ry="16" fill="#fff" opacity=".6"/></g></g>`}
+const label=(id,txt,size,fill='#fff',extra='')=>`<text id="${id}" text-anchor="middle" font-size="${size}" fill="${fill}" ${extra}>${txt}</text>`;
+
+// ---------- timing ----------
+const VO=__DUR__; // per-line voice durations
+const LEAD=VO.map((_,i)=>i?0.2:0.6), TAIL=0.35, FADE=0.45; // silence before / after each line, crossfade
+const scenes=[];
+function scene(id,bg,build,seek){scenes.push({id,bg,build,seek})}
+
+// ===== S0 life bar =====
+scene('s0','skyDeep',()=>{let s=starsSVG('s0st',70,3,700);
+ s+=`<g id="s0bar">`;for(let i=0;i<80;i++)s+=`<rect id="s0g${i}" x="-8" y="-45" width="16" height="90" rx="6" fill="url(#segDay)"/>`;s+='</g>';
+ s+=label('s0l0','0',36,'#AFF0FF')+label('s0l1','80 YEARS',36,'#AFF0FF');
+ s+=label('s0cnt','0',150,'#fff')+label('s0cap','YEARS ASLEEP',52,'#B3EBFF');
+ s+=charSVG('s0c');
+ s+=`<g id="s0moon"><circle r="70" fill="url(#glow)"/><circle r="34" fill="url(#moonG)"/><circle cx="16" cy="-10" r="28" fill="#0E1C2D"/></g>`;return s},
+(t,D)=>{twinkle('s0st',t);
+ for(let i=0;i<80;i++){const el=$('s0g'+i);const x=240+i*18+8;const p=k(t,.2+i*.02,.2+i*.02+.4,'outBack');
+  const night=(i%3==2);const q=night?k(t,3.0+i*.012,3.4+i*.012):0;
+  set(el,{fill:q>.5?'url(#segNight)':'url(#segDay)',transform:`translate(${x} 680) scale(${1+q*.3} ${Math.max(.001,p)*(1+q*.25)})`})}
+ set($('s0l0'),{x:248,y:780,opacity:k(t,1.6,2)});set($('s0l1'),{x:1672,y:780,opacity:k(t,1.6,2)});
+ const c=k(t,4.2,6.8,'out');const cn=$('s0cnt');cn.textContent=Math.round(26*c);set(cn,{x:960,y:400,opacity:k(t,4,4.4)});
+ cn.setAttribute('transform',`translate(960 360) scale(${.6+.4*k(t,4,4.6,'outBack')}) translate(-960 -360)`);
+ set($('s0cap'),{x:960,y:480,opacity:k(t,4.6,5.1)});
+ const mp=pop($('s0moon'),t,4.0,1500,330);
+ // hopping character on top of bar
+ const hx=lerp(260,1660,k(t,.8,D-.5,'lin'));const hop=Math.abs(Math.sin(t*4.5));
+ const seg=Math.floor((hx-240)/18);const onN=seg%3==2&&t>3.3;
+ charPose('s0c',t,{x:hx,y:600-hop*60,s:.55,asleep:onN&&hop<.35,blink:true});
+ $('s0c').setAttribute('opacity',k(t,.6,1));
+});
+// ===== S1 question =====
+scene('s1','sky',()=>{let s=starsSVG('s1st',110,5);
+ s+=`<circle id="s1glow" cx="1550" cy="230" r="230" fill="url(#glow)"/><circle cx="1550" cy="230" r="85" fill="url(#moonG)"/>`;
+ s+=`<g id="s1pl"><circle r="330" fill="url(#planetG)"/><ellipse cx="-120" cy="-200" rx="90" ry="34" fill="#fff" opacity=".25" transform="rotate(-30 -120 -200)"/>
+ <ellipse cx="120" cy="-80" rx="60" ry="22" fill="#A5FD8B" opacity=".6"/><ellipse cx="-150" cy="60" rx="80" ry="26" fill="#A5FD8B" opacity=".6"/><ellipse cx="60" cy="160" rx="70" ry="22" fill="#A5FD8B" opacity=".6"/></g>`;
+ s+=charSVG('s1c')+zzzSVG('s1z');
+ const icons=[['🍽','#FFCE85'],['💼','#00D2EE'],['🛡','#FF5F2D']];
+ s+=`<g id="s1i0"><circle r="70" fill="#FFCE85"/><circle r="44" fill="#fff"/><circle r="28" fill="#FFE4AF"/><rect x="-100" y="-6" width="16" height="70" rx="6" fill="#fff" transform="translate(0 -30)"/></g>`;
+ s+=`<g id="s1i1"><circle r="70" fill="#00D2EE"/><rect x="-42" y="-24" width="84" height="56" rx="10" fill="#fff"/><rect x="-16" y="-38" width="32" height="18" rx="5" fill="none" stroke="#fff" stroke-width="8"/></g>`;
+ s+=`<g id="s1i2"><circle r="70" fill="#FF5F2D"/><path d="M0 -42 L36 -28 C36 10 22 30 0 44 C-22 30 -36 10 -36 -28Z" fill="#fff"/></g>`;
+ for(let i=0;i<3;i++)s+=`<line id="s1x${i}" x1="-60" y1="-60" x2="60" y2="60" stroke="#FF197C" stroke-width="16" stroke-linecap="round"/>`;
+ s+=`<text id="s1q" text-anchor="middle" font-size="260" fill="#FFFF47" stroke="#FF5F2D" stroke-width="10" paint-order="stroke">?</text>`;return s},
+(t,D)=>{twinkle('s1st',t);$('s1glow').setAttribute('r',230+12*Math.sin(t*2));
+ tf($('s1pl'),960,1250,1,t*4);
+ charPose('s1c',t,{x:960,y:925+2*Math.sin(t*2.4),s:1.1,asleep:true});zzz('s1z',t,1040,820);
+ const xs=[520,960,1400];
+ for(let i=0;i<3;i++){const a=.8+i*.9;pop($('s1i'+i),t,a,xs[i],330);const p=k(t,a+.5,a+.8,'out');
+  set($('s1x'+i),{transform:`translate(${xs[i]} 330)`,'stroke-dasharray':170,'stroke-dashoffset':170*(1-p),opacity:p>0?1:0});
+  const out=k(t,4.3,4.8,'in');if(out>0){$('s1i'+i).setAttribute('opacity',1-out);$('s1x'+i).setAttribute('opacity',1-out)}}
+ const q=$('s1q');const p=k(t,4.6,5.3,'outBack');set(q,{opacity:cl(p*2),transform:`translate(960 470) rotate(${8*Math.sin(t*5)*(1-k(t,5.3,6.5))}) scale(${Math.max(.001,p)})`});
+});
+// ===== S2 adenosine =====
+let s2pts=[];
+scene('s2','skyDeep',()=>{let s='';
+ s+=`<path id="s2arc" d="M160 520 Q960 -260 1760 520" fill="none"/>`;
+ s+=`<g id="s2sun"><circle r="110" fill="url(#glowY)"/><circle r="52" fill="#FFE34D"/></g>`;
+ s+=brainSVG('s2br','url(#brainG)');
+ const R=rng(11);s+='<g id="s2p">';for(let i=0;i<140;i++){let x,y;do{x=(R()*2-1);y=(R()*2-1)}while(x*x+y*y>1);s2pts.push([x*330,y*200-30,R()*6.28]);
+  s+=`<g id="s2p${i}"><circle r="20" fill="url(#glowY)"/><circle r="8" fill="#FFFF9A"/></g>`}s+='</g>';
+ s+=`<g id="s2lab"><rect x="-200" y="-52" width="400" height="90" rx="45" fill="#FFB42D"/><text text-anchor="middle" y="14" font-size="48" fill="#290D1C">ADENOSINE</text></g>`;
+ s+=`<text id="s2clk" text-anchor="middle" font-size="44" fill="#AFF0FF">8 AM</text>`;return s},
+(t,D)=>{const sp=k(t,0,D,'lin');const a=$('s2arc');const L=a.getTotalLength();const pt=a.getPointAtLength(sp*L);tf($('s2sun'),pt.x,pt.y,1,0);
+ const hr=8+Math.round(sp*14);$('s2clk').textContent=(hr>12?hr-12:hr)+(hr>=12?' PM':' AM');set($('s2clk'),{x:960,y:1040,opacity:k(t,.3,.8)});
+ tf($('s2br'),960,600,.92+.01*Math.sin(t*2));
+ for(let i=0;i<140;i++){const ap=.6+(i/140)*(D-2.2);const p=k(t,ap,ap+.4,'outBack');const [x,y,ph]=s2pts[i];
+  const el=$('s2p'+i);set(el,{opacity:cl(p*2)*(.75+.25*Math.sin(t*4+ph)),transform:`translate(${960+x*.92+6*Math.sin(t*2+ph)} ${600+y*.92+6*Math.cos(t*1.7+ph)}) scale(${Math.max(.001,p)})`})}
+ const lp=k(t,1.4,2.0,'outBack');set($('s2lab'),{opacity:cl(lp*2),transform:`translate(${1580} ${800+8*Math.sin(t*2)}) scale(${Math.max(.001,lp)})`});
+});
+// ===== S3 sleep pressure gauge =====
+scene('s3','sky',()=>{let s=starsSVG('s3st',80,8);
+ const arc=(a0,a1,c)=>{const r=300,cx=0,cy=0;const p=a=>[cx+r*Math.cos(a),cy+r*Math.sin(a)];const [x0,y0]=p(a0),[x1,y1]=p(a1);return `<path d="M${x0} ${y0} A${r} ${r} 0 0 1 ${x1} ${y1}" stroke="${c}" stroke-width="70" fill="none"/>`};
+ s+=`<g id="s3g"><circle r="380" fill="#211840" opacity=".7"/>`+arc(Math.PI,Math.PI*1.36,'#6EED65')+arc(Math.PI*1.36,Math.PI*1.66,'#FFE34D')+arc(Math.PI*1.66,Math.PI*2,'#FF5F2D')+
+ `<g id="s3n"><path d="M-18 0 L0 -260 L18 0Z" fill="#fff"/></g><circle r="40" fill="#fff"/><circle r="18" fill="#423AA8"/>
+ <text text-anchor="middle" y="120" font-size="54" fill="#fff">SLEEP PRESSURE</text></g>`;
+ s+=charSVG('s3c');return s},
+(t,D)=>{twinkle('s3st',t);tf($('s3g'),720,680,1);pop($('s3g'),t,.1,720,680,.6);
+ const p=k(t,.6,D-1,'inOut');const ang=lerp(-82,78,p)+3*Math.sin(t*14)*k(t,D-2,D-1);$('s3n').setAttribute('transform',`rotate(${ang})`);
+ const lid=1-.85*k(t,1,D-.6);const yawn=k(t,2.6,3.2)*(1-k(t,4.2,4.8));
+ charPose('s3c',t,{x:1420,y:800,s:1.5,open:lid,blink:false,mouth:5+yawn*22,rot:-6*p});
+});
+// ===== S4 cleaning mode =====
+scene('s4','sky',()=>{let s=starsSVG('s4st',120,13);
+ s+=`<g id="s4moon"><circle r="260" fill="url(#glow)"/><circle r="100" fill="url(#moonG)"/><circle cx="-30" cy="-20" r="18" fill="#FFCE85" opacity=".6"/><circle cx="35" cy="30" r="12" fill="#FFCE85" opacity=".6"/></g>`;
+ s+=brainSVG('s4br','url(#brainN)')+`<g id="s4cl">`+cloudSVG('s4c1',.6)+`</g>`;
+ s+=`<g id="s4sw"><rect x="-210" y="-60" width="420" height="120" rx="60" fill="#232453"/><text id="s4tx" x="-30" y="16" text-anchor="middle" font-size="44" fill="#fff">CLEANING</text>
+  <rect x="120" y="-40" width="140" height="80" rx="40" id="s4tr" fill="#5D5D6B"/><circle id="s4kn" cx="160" r="32" fill="#fff"/></g>`;
+ const R=rng(21);s+='<g id="s4sp">';for(let i=0;i<16;i++)s+=`<path data-a="${R()*6.28}" data-r="${300+R()*160}" d="M0 -16 Q3 -3 16 0 Q3 3 0 16 Q-3 3 -16 0 Q-3 -3 0 -16Z" fill="#E1F8FF"/>`;s+='</g>';return s},
+(t,D)=>{twinkle('s4st',t);const m=k(t,0,1.8,'out');tf($('s4moon'),1560,lerp(600,260,m),1+.03*Math.sin(t*2));
+ const sb=$('s4br');tf(sb,880,580,.8);sb.setAttribute('opacity',1);
+ tf($('s4cl'),lerp(-300,2200,(t/D)*.5+.2),900,1);
+ const sp=k(t,1.6,2.2,'outBack');set($('s4sw'),{opacity:cl(sp*2),transform:`translate(880 140) scale(${Math.max(.001,sp)})`});
+ const on=k(t,2.4,2.8,'outBack');$('s4kn').setAttribute('cx',lerp(160,220,on));$('s4tr').setAttribute('fill',mixC('#5D5D6B','#01CB79',cl(on)));
+ const shine=k(t,2.6,3.6);let i=0;for(const e of $('s4sp').children){const a=+e.dataset.a+t*.4,r=+e.dataset.r;const o=shine*Math.abs(Math.sin(t*2.5+i));
+  set(e,{transform:`translate(${880+Math.cos(a)*r} ${580+Math.sin(a)*r*.75}) scale(${.6+o*.6})`,opacity:o});i++}
+});
+// ===== S5 + S6 cells =====
+function cellsSVG(p){let s='';for(let j=0;j<5;j++)for(let i=0;i<9;i++)s+=`<g id="${p}c${i}_${j}"><ellipse rx="66" ry="62" fill="url(#cellG)"/><ellipse cx="-22" cy="-24" rx="20" ry="10" fill="#fff" opacity=".4" transform="rotate(-30 -22 -24)"/><circle cx="8" cy="6" r="16" fill="#00578A" opacity=".5"/></g>`;return s}
+function cellsPose(p,t,f){for(let j=0;j<5;j++)for(let i=0;i<9;i++){const bx=(i-4)*160,by=(j-2)*160;const ph=i*1.3+j*.7;
+ $(`${p}c${i}_${j}`).setAttribute('transform',`translate(${960+bx*f+3*Math.sin(t*1.5+ph)} ${560+by*f+3*Math.cos(t*1.3+ph)}) rotate(${4*Math.sin(t+ph)}) scale(${1+.03*Math.sin(t*2+ph)})`)}}
+scene('s5','skyDeep',()=>{let s='<g id="s5cells">'+cellsSVG('s5')+'</g>';
+ s+=`<g id="s5tag"><rect x="-230" y="-80" width="460" height="160" rx="40" fill="#FF197C"/><text id="s5n" text-anchor="middle" y="38" font-size="110" fill="#fff">+0%</text></g>`;
+ s+=`<g id="s5cap"><rect x="-260" y="-36" width="520" height="72" rx="36" fill="#232453" opacity=".9"/><text text-anchor="middle" y="14" font-size="36" fill="#AFF0FF">MOUSE STUDY · 2013</text></g>`;
+ s+=`<g id="s5ar">`+['<path d="M-70 0 L-20 -30 L-20 30Z" fill="#FFFF47"/>','<path d="M70 0 L20 -30 L20 30Z" fill="#FFFF47"/>'].join('')+'</g>';return s},
+(t,D)=>{const f=lerp(.80,1.07,k(t,1.6,4.6));cellsPose('s5',t,f);
+ const sc=k(t,0,.8,'out');$('s5cells').setAttribute('transform',`translate(960 560) scale(${.9+.1*sc}) translate(-960 -560)`);
+ const tp=k(t,1.8,2.4,'outBack');set($('s5tag'),{opacity:cl(tp*2),transform:`translate(960 560) scale(${Math.max(.001,tp)})`});
+ $('s5n').textContent='+'+Math.round(60*k(t,2,4.6,'out'))+'%';
+ const cp=k(t,.6,1.1,'out');set($('s5cap'),{opacity:cp,transform:`translate(960 ${lerp(1100,1010,cp)})`});
+ set($('s5ar'),{opacity:k(t,2.4,2.8)*(1-k(t,5,5.5)),transform:`translate(960 760) scale(${1+.15*Math.sin(t*6)})`});
+});
+let s6junk=[];
+scene('s6','skyDeep',()=>{let s='';const R=rng(31);
+ s+='<g id="s6fl">';for(let i=0;i<90;i++)s+=`<circle data-row="${Math.floor(R()*6)}" data-o="${R()}" data-sp="${.8+R()*.5}" r="${5+R()*7}" fill="#B3EBFF"/>`;s+='</g>';
+ s+=cellsSVG('s6');
+ s+='<g id="s6j">';for(let i=0;i<22;i++){const x=200+R()*1300,y=170+R()*780;s6junk.push([x,y,R()]);s+=`<g id="s6j${i}"><path d="M-22 -10 Q-10 -26 8 -18 Q26 -8 18 12 Q6 26 -14 18 Q-30 6 -22 -10Z" fill="url(#junkG)"/></g>`}s+='</g>';
+ s+=`<g id="s6lab"><rect x="-300" y="-46" width="600" height="92" rx="46" fill="#0091C4"/><text text-anchor="middle" y="16" font-size="46" fill="#fff">GLYMPHATIC FLOW</text></g>`;
+ s+=`<g id="s6bin"><rect x="-70" y="-40" width="140" height="150" rx="20" fill="#5D5D6B"/><rect x="-86" y="-60" width="172" height="30" rx="12" fill="#7F7F8F"/><text text-anchor="middle" y="50" font-size="30" fill="#fff">WASTE</text></g>`;return s},
+(t,D)=>{cellsPose('s6',t,1.07);
+ for(const c of $('s6fl').children){const row=+c.dataset.row,o=+c.dataset.o,sp=+c.dataset.sp;const y=560+(row-2.5)*171;
+  const x=((o+t*.18*sp)%1)*2100-90;set(c,{cx:x,cy:y+14*Math.sin(x/90+row),opacity:k(t,0,.8)*.85})}
+ for(let i=0;i<22;i++){const [x,y,r]=s6junk[i];const st=.9+r*2.2;const p=k(t,st,st+2.6,'in');
+  const nx=x+p*(1900-x),ny=lerp(y,y+(r-.5)*200,p);$('s6j'+i).setAttribute('transform',`translate(${nx} ${ny}) rotate(${t*90*(r-.5)}) scale(${1-p*.6})`);$('s6j'+i).setAttribute('opacity',1-k(t,st+2,st+2.6))}
+ const lp=k(t,.4,1,'outBack');set($('s6lab'),{opacity:cl(lp*2),transform:`translate(960 ${90}) scale(${Math.max(.001,lp)})`});
+ pop($('s6bin'),t,1.4,1780,860);
+});
+// ===== S7 memory sorting =====
+let s7o=[];
+scene('s7','sky',()=>{let s=starsSVG('s7st',90,41);const R=rng(45);
+ s+=`<g id="s7box"><rect x="-210" y="-230" width="420" height="460" rx="40" fill="url(#boxG)"/><rect x="-170" y="-60" width="340" height="14" rx="7" fill="#7F79D1"/><rect x="-170" y="80" width="340" height="14" rx="7" fill="#7F79D1"/>
+  <text text-anchor="middle" y="-262" font-size="44" fill="#fff">LONG-TERM MEMORY</text><circle r="230" fill="url(#glowC)" opacity=".5"/></g>`;
+ s+=brainSVG('s7br','url(#brainN)');
+ for(let i=0;i<16;i++){const gold=i%5!=3&&i%3!=1;s7o.push({gold,y:200+R()*680,ph:R()*6.28,slot:i});
+  s+=`<g id="s7o${i}"><circle r="${gold?46:40}" fill="url(#${gold?'gold':'grey'})"/><circle cx="-14" cy="-14" r="10" fill="#fff" opacity=".6"/>${gold?'<path d="M-14 2 L-4 12 L16 -10" stroke="#B15141" stroke-width="7" fill="none" stroke-linecap="round"/>':''}</g>`}
+ return s},
+(t,D)=>{twinkle('s7st',t);tf($('s7br'),620,560,.5+.01*Math.sin(t*2));pop($('s7box'),t,.3,1520,560,.6);
+ let g=0;for(let i=0;i<16;i++){const o=s7o[i];const a=.4+i*.3;const p1=k(t,a,a+1,'out');const el=$('s7o'+i);
+  let x=lerp(-80,620+Math.cos(o.ph)*150,p1),y=lerp(o.y,560+Math.sin(o.ph)*110,p1);let sc=1,op=p1>0?1:0;
+  const p2=k(t,a+1.4,a+2.4,'inOut');
+  if(o.gold){const slot=g;const gx=1400+(slot%4)*80,gy=[462,602,740][Math.floor(slot/4)];
+   x=lerp(x,gx,p2);y=lerp(y,gy,p2)-Math.sin(p2*Math.PI)*160;sc=1-.3*p2}
+  else{sc=1-p2;op=op*(1-p2);y+=p2*60}
+  if(o.gold)g++;
+  set(el,{opacity:op,transform:`translate(${x+4*Math.sin(t*2+o.ph)} ${y}) scale(${Math.max(.001,sc)})`})}
+});
+// ===== S8 body repair =====
+scene('s8','sky',()=>{let s=starsSVG('s8st',90,51);
+ s+=`<circle id="s8sh" r="300" fill="none" stroke="#33F5FF" stroke-width="18" stroke-linecap="round"/><circle id="s8shf" r="300" fill="url(#glowC)"/>`;
+ s+=charSVG('s8c')+zzzSVG('s8z');
+ const gear=(id,r,c)=>{let g=`<g id="${id}"><circle r="${r}" fill="${c}"/>`;for(let i=0;i<8;i++)g+=`<rect x="${-r*.22}" y="${-r*1.3}" width="${r*.44}" height="${r*.5}" rx="6" fill="${c}" transform="rotate(${i*45})"/>`;return g+`<circle r="${r*.4}" fill="#211840"/></g>`};
+ s+=gear('s8g1',70,'#FFB42D')+gear('s8g2',46,'#FFE34D');
+ s+='<g id="s8pl">';for(let i=0;i<10;i++)s+=`<path d="M-8 -24 H8 V-8 H24 V8 H8 V24 H-8 V8 H-24 V-8 H-8Z" fill="#6EED65"/>`;s+='</g>';
+ s+=`<g id="s8lab"><rect x="-300" y="-46" width="600" height="92" rx="46" fill="#01CB79"/><text text-anchor="middle" y="16" font-size="46" fill="#fff">REPAIR + IMMUNITY</text></g>`;return s},
+(t,D)=>{twinkle('s8st',t);charPose('s8c',t,{x:960,y:700,s:1.6,asleep:true});zzz('s8z',t,1080,520);
+ const sh=k(t,.6,2.2,'inOut');const C=2*Math.PI*300;set($('s8sh'),{cx:960,cy:600,'stroke-dasharray':C,'stroke-dashoffset':C*(1-sh),opacity:.9,transform:`rotate(-90 960 600)`});
+ set($('s8shf'),{cx:960,cy:600,opacity:k(t,2,2.6)*(.35+.15*Math.sin(t*3))});
+ pop($('s8g1'),t,1.0,480,420);$('s8g1').setAttribute('transform',`translate(480 420) rotate(${t*60}) scale(${k(t,1,1.5,'outBack')||.001})`);
+ pop($('s8g2'),t,1.2,580,330);$('s8g2').setAttribute('transform',`translate(578 328) rotate(${-t*90+20}) scale(${k(t,1.2,1.7,'outBack')||.001})`);
+ let i=0;for(const pl of $('s8pl').children){const p=((t*.35+i/10)%1);const x=960+Math.cos(i*2.3)*(330+i*12),y=650-p*420;set(pl,{transform:`translate(${x} ${y}) scale(${.6+.4*Math.sin(p*Math.PI)})`,opacity:Math.sin(p*Math.PI)*k(t,1.6,2.2)});i++}
+ const lp=k(t,.4,1,'outBack');set($('s8lab'),{opacity:cl(lp*2),transform:`translate(960 110) scale(${Math.max(.001,lp)})`});
+});
+// ===== S9 sleep deprived =====
+scene('s9','skyRed',()=>{let s='';
+ s+=`<g id="s9bat"><rect x="-120" y="-220" width="240" height="440" rx="36" fill="none" stroke="#fff" stroke-width="18"/><rect x="-50" y="-262" width="100" height="40" rx="12" fill="#fff"/><rect id="s9lvl" x="-92" width="184" rx="20"/></g>`;
+ s+=charSVG('s9c',`<g stroke="#5B3D73" stroke-width="5" fill="none" stroke-linecap="round"><path d="M-50 -18 Q-32 -8 -14 -18"/><path d="M14 -18 Q32 -8 50 -18"/></g>`);
+ s+=`<g id="s9bars"><text x="0" y="-150" font-size="44" fill="#fff">FOCUS</text><rect x="0" y="-130" width="420" height="56" rx="28" fill="#000" opacity=".3"/><rect id="s9b1" x="0" y="-130" height="56" rx="28" fill="#00D2EE"/>
+  <text x="0" y="20" font-size="44" fill="#fff">MEMORY</text><rect x="0" y="40" width="420" height="56" rx="28" fill="#000" opacity=".3"/><rect id="s9b2" x="0" y="40" height="56" rx="28" fill="#E565FF"/></g>`;
+ s+=`<rect id="s9v" width="1920" height="1080" fill="url(#vign)"/>`;
+ s+=`<g id="s9lab"><rect x="-260" y="-46" width="520" height="92" rx="46" fill="#FF197C"/><text text-anchor="middle" y="16" font-size="46" fill="#fff">ONE BAD NIGHT</text></g>`;return s},
+(t,D)=>{const lvl=1-.82*k(t,1,D-.8,'inOut');const h=400*lvl;set($('s9lvl'),{y:200-h,height:h,fill:mixC('#6EED65','#FF2D2D',cl((1-lvl)*1.3))});
+ pop($('s9bat'),t,.2,420,600);
+ const shake=k(t,2,3)*3*Math.sin(t*30);charPose('s9c',t,{x:960+shake,y:780,s:1.5,open:.42,blink:false,mouth:4,rot:4*Math.sin(t*1.3)});
+ const bp=k(t,.5,1,'out');$('s9bars').setAttribute('transform',`translate(${lerp(1900,1310,bp)} 560)`);
+ $('s9b1').setAttribute('width',420*lerp(1,.45,k(t,1.6,D-1)));$('s9b2').setAttribute('width',420*lerp(1,.5,k(t,2.1,D-.8)));
+ $('s9v').setAttribute('opacity',(.45+.35*Math.sin(t*4))*k(t,1.5,2.5));
+ const lp=k(t,.2,.8,'outBack');set($('s9lab'),{opacity:cl(lp*2),transform:`translate(960 110) scale(${Math.max(.001,lp)})`});
+});
+// ===== S10 takeaway =====
+scene('s10','sky',()=>{let s=starsSVG('s10st',140,61);
+ s+=`<g id="s10moon"><circle r="300" fill="url(#glow)"/><circle r="120" fill="url(#moonG)"/><circle cx="-36" cy="-24" r="22" fill="#FFCE85" opacity=".6"/><circle cx="40" cy="36" r="14" fill="#FFCE85" opacity=".6"/></g>`;
+ s+=cloudSVG('s10cl',1.25)+charSVG('s10c')+zzzSVG('s10z');
+ s+=label('s10t1',"YOUR BRAIN'S",66,'#E1F8FF')+label('s10t2','NIGHT SHIFT',110,'#FFFF47','stroke="#FF5F2D" stroke-width="8" paint-order="stroke"');
+ s+=`<g id="s10h"><rect x="-230" y="-70" width="460" height="140" rx="70" fill="#01CB79"/><text text-anchor="middle" y="30" font-size="84" fill="#fff">7–9 HRS</text></g>`;return s},
+(t,D)=>{twinkle('s10st',t);tf($('s10moon'),1560,250,1+.03*Math.sin(t*2));
+ const fl=10*Math.sin(t*1.3);tf($('s10cl'),640,840+fl,1);charPose('s10c',t,{x:640,y:770+fl,s:1.2,asleep:true});zzz('s10z',t,720,640+fl);
+ const a=k(t,.8,1.3,'outBack');set($('s10t1'),{x:1300,y:470,opacity:cl(a*2)});
+ const b=k(t,1.2,1.8,'outBack');set($('s10t2'),{opacity:cl(b*2),transform:`translate(1300 590) scale(${Math.max(.001,b)}) translate(-1300 -590)`,x:1300,y:590});
+ const c=k(t,3.4,4,'outBack');set($('s10h'),{opacity:cl(c*2),transform:`translate(1300 780) scale(${Math.max(.001,c)*(1+.04*Math.sin(t*4))})`});
+});
+// ===== S11 outro =====
+scene('s11','skyDeep',()=>starsSVG('s11st',160,71)+`<circle id="s11g" cx="960" cy="470" r="420" fill="url(#glow)" opacity=".35"/>`+label('s11a','WHY WE SLEEP',130,'#fff')+label('s11b','by Smiling Buddha',48,'#AFF0FF'),
+(t,D)=>{twinkle('s11st',t);const a=k(t,.2,.9,'outBack');set($('s11a'),{opacity:cl(a*2),transform:`translate(960 500) scale(${Math.max(.001,a)}) translate(-960 -500)`,x:960,y:500});
+ set($('s11b'),{x:960,y:600,opacity:k(t,1,1.6)*(1-k(t,D-.6,D))});$('s11a').setAttribute('opacity',cl(a*2)*(1-k(t,D-.6,D)));});
+
+// ---------- master timeline ----------
+let tcur=0;scenes.forEach((sc,i)=>{sc.start=tcur;if(i<VO.length){sc.voAt=tcur+LEAD[i];sc.dur=LEAD[i]+VO[i]+TAIL}else sc.dur=3.2;tcur+=sc.dur});
+window.DURATION=tcur;window.TIMELINE=scenes.map(s=>({id:s.id,start:s.start,dur:s.dur,voAt:s.voAt}));
+const root=$('root');
+for(const sc of scenes){const g=document.createElementNS('http://www.w3.org/2000/svg','g');g.id=sc.id+'_wrap';
+ g.innerHTML=`<rect width="1920" height="1080" fill="url(#${sc.bg})"/><g id="${sc.id}_cam">${sc.build()}</g>`;root.appendChild(g);sc.el=g;sc.cam=g.querySelector('#'+sc.id+'_cam')}
+window.seek=T=>{for(let i=0;i<scenes.length;i++){const sc=scenes[i];const lt=T-sc.start;
+  const vis=lt>=-0.0001&&lt<sc.dur+FADE;sc.el.style.display=vis?'':'none';if(!vis)continue;
+  sc.el.setAttribute('opacity',i==0?1:k(lt,0,FADE,'inOut'));
+  const z=1+.045*k(lt,0,sc.dur+FADE,'lin');sc.cam.setAttribute('transform',`translate(960 540) scale(${z}) translate(-960 -540)`);
+  sc.seek(Math.max(0,lt),sc.dur)}};
+window.seek(0);
+</script></body></html>

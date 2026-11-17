@@ -1,0 +1,124 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><style>
+html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:#12253A}
+text{font-family:Poppins,sans-serif;font-weight:700}
+</style></head><body>
+<svg id="s" width="1920" height="1080" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+<defs>
+ <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1A1236"/><stop offset="1" stop-color="#3A3296"/></linearGradient>
+ <linearGradient id="skyDeep" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0E1C2D"/><stop offset="1" stop-color="#162B36"/></linearGradient>
+ <linearGradient id="skyRed" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#290D1C"/><stop offset="1" stop-color="#5B1F3A"/></linearGradient>
+ <radialGradient id="glow"><stop offset="0" stop-color="#FFF8D8"/><stop offset=".35" stop-color="#FFE4AF" stop-opacity=".55"/><stop offset="1" stop-color="#FFE4AF" stop-opacity="0"/></radialGradient>
+ <radialGradient id="glowC"><stop offset="0" stop-color="#C8FBFF"/><stop offset=".4" stop-color="#33F5FF" stop-opacity=".45"/><stop offset="1" stop-color="#33F5FF" stop-opacity="0"/></radialGradient>
+ <radialGradient id="glowY"><stop offset="0" stop-color="#FFFFE0"/><stop offset=".45" stop-color="#FFFF47" stop-opacity=".8"/><stop offset="1" stop-color="#FFB42D" stop-opacity="0"/></radialGradient>
+ <radialGradient id="vign"><stop offset=".55" stop-color="#FF0040" stop-opacity="0"/><stop offset="1" stop-color="#FF0040" stop-opacity=".55"/></radialGradient>
+ <linearGradient id="charG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F79BFF"/><stop offset="1" stop-color="#9246F8"/></linearGradient>
+ <linearGradient id="brainG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFB9D4"/><stop offset="1" stop-color="#F0437E"/></linearGradient>
+ <linearGradient id="brainN" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9FA8FF"/><stop offset="1" stop-color="#4B3FC0"/></linearGradient>
+ <linearGradient id="cellG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7FF8FF"/><stop offset="1" stop-color="#0091C4"/></linearGradient>
+ <linearGradient id="junkG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#C77DFF"/><stop offset="1" stop-color="#5B1A8F"/></linearGradient>
+ <linearGradient id="planetG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#83F96F"/><stop offset="1" stop-color="#01A86A"/></linearGradient>
+ <linearGradient id="moonG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFFBEA"/><stop offset="1" stop-color="#FFCE85"/></linearGradient>
+ <linearGradient id="segDay" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFE9A8"/><stop offset="1" stop-color="#FFB42D"/></linearGradient>
+ <linearGradient id="segNight" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9FA8FF"/><stop offset="1" stop-color="#4B3FC0"/></linearGradient>
+ <linearGradient id="cloudG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#B3EBFF"/></linearGradient>
+ <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFFF9A"/><stop offset="1" stop-color="#FFB42D"/></linearGradient>
+ <linearGradient id="grey" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#B9B9D6"/><stop offset="1" stop-color="#5D5D6B"/></linearGradient>
+ <linearGradient id="boxG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5759B9"/><stop offset="1" stop-color="#232453"/></linearGradient>
+</defs>
+<g id="root"></g>
+</svg>
+<script>
+// ---------- helpers ----------
+const E={lin:t=>t,out:t=>1-(1-t)**3,in:t=>t**3,inOut:t=>t<.5?4*t**3:1-(-2*t+2)**3/2,
+ outBack:t=>{const c=1.7;return 1+(c+1)*(t-1)**3+c*(t-1)**2}};
+const cl=v=>Math.min(1,Math.max(0,v));
+const k=(t,a,b,e='inOut')=>E[e](cl((t-a)/(b-a)));
+const lerp=(a,b,p)=>a+(b-a)*p;
+const rng=s=>()=>(s=(s*16807)%2147483647)/2147483647;
+const $=id=>document.getElementById(id);
+const set=(el,o)=>{for(const a in o)el.setAttribute(a,o[a])};
+const tf=(el,x,y,s=1,r=0)=>el.setAttribute('transform',`translate(${x} ${y}) rotate(${r}) scale(${s})`);
+const pop=(el,t,a,x,y,d=.55,s0=1)=>{const p=k(t,a,a+d,'outBack');el.setAttribute('opacity',cl(p*2));tf(el,x,y,Math.max(0.001,p*s0));return p};
+const mixC=(a,b,p)=>{const h=c=>[1,3,5].map(i=>parseInt(c.slice(i,i+2),16));const A=h(a),B=h(b);return '#'+A.map((v,i)=>Math.round(lerp(v,B[i],p)).toString(16).padStart(2,'0')).join('')};
+
+// ---------- reusable art ----------
+function starsSVG(id,n,seed,h=1080){const R=rng(seed);let s=`<g id="${id}">`;for(let i=0;i<n;i++){const x=R()*1920,y=R()*h,r=1+R()*2.6;
+ if(R()<.12)s+=`<path data-ph="${R()*6.28}" transform="translate(${x} ${y})" d="M0 -12 Q2 -2 12 0 Q2 2 0 12 Q-2 2 -12 0 Q-2 -2 0 -12Z" fill="#FFF8D8"/>`;
+ else s+=`<circle data-ph="${R()*6.28}" cx="${x}" cy="${y}" r="${r}" fill="#fff"/>`}return s+'</g>'}
+function twinkle(id,t){for(const c of $(id).children)c.setAttribute('opacity',.35+.65*Math.abs(Math.sin(t*1.6+ +c.dataset.ph)))}
+// character: blob with eyes. parts: id_b body, id_eo (open eyes group), id_ec (closed eyes), id_m mouth
+function charSVG(id,extra=''){return `<g id="${id}"><g id="${id}_b">
+ <ellipse cx="0" cy="18" rx="105" ry="22" fill="#000" opacity=".18"/>
+ <path d="M-95 0 C-95 -120 95 -120 95 0 C95 20 60 18 0 18 C-60 18 -95 20 -95 0Z" fill="url(#charG)"/>
+ <ellipse cx="-45" cy="-70" rx="22" ry="12" fill="#fff" opacity=".35" transform="rotate(-30 -45 -70)"/>
+ <ellipse cx="-62" cy="-18" rx="14" ry="8" fill="#FF6FB0" opacity=".5"/><ellipse cx="62" cy="-18" rx="14" ry="8" fill="#FF6FB0" opacity=".5"/>
+ <g id="${id}_eo"><g id="${id}_eL" transform="translate(-32 -48)"><ellipse rx="20" ry="24" fill="#fff"/><circle cx="3" cy="3" r="11" fill="#1F004E"/><circle cx="7" cy="-3" r="4" fill="#fff"/></g>
+ <g id="${id}_eR" transform="translate(32 -48)"><ellipse rx="20" ry="24" fill="#fff"/><circle cx="3" cy="3" r="11" fill="#1F004E"/><circle cx="7" cy="-3" r="4" fill="#fff"/></g></g>
+ <g id="${id}_ec" opacity="0" stroke="#1F004E" stroke-width="6" fill="none" stroke-linecap="round"><path d="M-50 -46 Q-32 -32 -14 -46"/><path d="M14 -46 Q32 -32 50 -46"/></g>
+ <ellipse id="${id}_m" cx="0" cy="-16" rx="10" ry="5" fill="#5B0030"/>${extra}</g></g>`}
+// state: open (0..1 eyelid), asleep bool, breathe
+function charPose(id,t,{x,y,s=1,asleep=false,open=1,blink=true,mouth=5,rot=0}){
+ const br=1+0.025*Math.sin(t*2.4);tf($(id),x,y,s,rot);
+ $(id+'_b').setAttribute('transform',`scale(${1/br**.5} ${br})`);
+ let o=open; if(blink&&!asleep){const ph=(t%3.1);if(ph<.14)o*=Math.abs(ph-.07)/.07}
+ $(id+'_eo').setAttribute('opacity',asleep?0:1);$(id+'_ec').setAttribute('opacity',asleep?1:0);
+ for(const e of ['_eL','_eR']){const g=$(id+e);const tx=e=='_eL'?-32:32;g.setAttribute('transform',`translate(${tx} -48) scale(1 ${Math.max(.06,o)})`)}
+ $(id+'_m').setAttribute('ry',mouth);
+}
+function zzzSVG(id){return `<g id="${id}">`+[0,1,2].map(i=>`<text id="${id}${i}" font-size="${40+i*14}" fill="#E1F8FF">z</text>`).join('')+'</g>'}
+function zzz(id,t,x,y){for(let i=0;i<3;i++){const p=((t*0.45+i/3)%1);const el=$(id+i);set(el,{x:x+p*90+Math.sin(p*6)*14,y:y-p*170,opacity:Math.sin(p*Math.PI)})}}
+function brainSVG(id,fill){return `<g id="${id}">
+ <rect x="-40" y="150" width="80" height="110" rx="34" fill="${fill}" opacity=".9"/>
+ <ellipse cx="-140" cy="-10" rx="210" ry="185" fill="${fill}"/><ellipse cx="140" cy="-10" rx="210" ry="185" fill="${fill}"/>
+ <ellipse cx="0" cy="-90" rx="250" ry="150" fill="${fill}"/><ellipse cx="-70" cy="110" rx="200" ry="110" fill="${fill}"/><ellipse cx="80" cy="110" rx="200" ry="110" fill="${fill}"/>
+ <g stroke="#000" stroke-opacity=".18" stroke-width="12" fill="none" stroke-linecap="round">
+ <path d="M0 -200 C-20 -120 20 -60 0 0 C-20 60 20 120 0 170"/>
+ <path d="M-280 -40 C-220 -90 -180 -20 -120 -70 S-60 -150 -40 -110"/><path d="M-260 70 C-200 30 -160 110 -100 60"/>
+ <path d="M280 -40 C220 -90 180 -20 120 -70 S60 -150 40 -110"/><path d="M260 70 C200 30 160 110 100 60"/>
+ <path d="M-180 -170 C-140 -130 -90 -190 -60 -150"/><path d="M180 -170 C140 -130 90 -190 60 -150"/></g>
+ <ellipse cx="-170" cy="-130" rx="60" ry="24" fill="#fff" opacity=".3" transform="rotate(-25 -170 -130)"/></g>`}
+function cloudSVG(id,s=1){return `<g id="${id}"><g transform="scale(${s})"><ellipse cx="0" cy="20" rx="210" ry="60" fill="url(#cloudG)"/><circle cx="-90" cy="-10" r="80" fill="url(#cloudG)"/><circle cx="30" cy="-40" r="105" fill="url(#cloudG)"/><circle cx="130" cy="0" r="70" fill="url(#cloudG)"/><ellipse cx="-20" cy="-90" rx="40" ry="16" fill="#fff" opacity=".6"/></g></g>`}
+const label=(id,txt,size,fill='#fff',extra='')=>`<text id="${id}" text-anchor="middle" font-size="${size}" fill="${fill}" ${extra}>${txt}</text>`;
+
+// ---------- timing ----------
+const VO=__DUR__; // per-line voice durations
+const LEAD=VO.map((_,i)=>i?0.2:0.6), TAIL=0.35, FADE=0.45; // silence before / after each line, crossfade
+const scenes=[];
+function scene(id,bg,build,seek){scenes.push({id,bg,build,seek})}
+
+// ===== SCENES =====
+// scene(id, backgroundGradientId, build() -> svg string, seek(localTime, sceneDuration))
+// One scene per narration line (VO[i]); extra scenes after the last line get 3.2 s (outro).
+// Rules: everything is a pure function of t (no timers, no Math.random -> use rng(seed)).
+
+scene('s0','sky',()=>starsSVG('s0st',110,5)+
+  `<circle id="s0glow" cx="1550" cy="230" r="230" fill="url(#glow)"/><circle cx="1550" cy="230" r="85" fill="url(#moonG)"/>`+
+  charSVG('s0c')+zzzSVG('s0z')+label('s0t','YOUR TITLE HERE',96,'#fff'),
+(t,D)=>{twinkle('s0st',t);$('s0glow').setAttribute('r',230+12*Math.sin(t*2));
+  charPose('s0c',t,{x:960,y:820,s:1.4,asleep:t>2});zzz('s0z',t,1060,680);
+  const p=k(t,.3,.9,'outBack');set($('s0t'),{x:960,y:300,opacity:cl(p*2),transform:`translate(960 300) scale(${Math.max(.001,p)}) translate(-960 -300)`});
+});
+
+scene('s1','skyDeep',()=>brainSVG('s1br','url(#brainG)')+
+  `<g id="s1lab"><rect x="-200" y="-52" width="400" height="90" rx="45" fill="#FFB42D"/><text text-anchor="middle" y="14" font-size="48" fill="#290D1C">LABEL</text></g>`,
+(t,D)=>{pop($('s1br'),t,.2,960,560,.7,.9);
+  const lp=k(t,1,1.5,'outBack');set($('s1lab'),{opacity:cl(lp*2),transform:`translate(1560 820) scale(${Math.max(.001,lp)})`});
+});
+
+// outro (no narration line)
+scene('s2','skyDeep',()=>starsSVG('s2st',160,71)+label('s2a','CHANNEL NAME',110,'#fff'),
+(t,D)=>{twinkle('s2st',t);const a=k(t,.2,.9,'outBack');set($('s2a'),{x:960,y:560,opacity:cl(a*2)*(1-k(t,D-.6,D))});});
+
+// ---------- master timeline ----------
+let tcur=0;scenes.forEach((sc,i)=>{sc.start=tcur;if(i<VO.length){sc.voAt=tcur+LEAD[i];sc.dur=LEAD[i]+VO[i]+TAIL}else sc.dur=3.2;tcur+=sc.dur});
+window.DURATION=tcur;window.TIMELINE=scenes.map(s=>({id:s.id,start:s.start,dur:s.dur,voAt:s.voAt}));
+const root=$('root');
+for(const sc of scenes){const g=document.createElementNS('http://www.w3.org/2000/svg','g');g.id=sc.id+'_wrap';
+ g.innerHTML=`<rect width="1920" height="1080" fill="url(#${sc.bg})"/><g id="${sc.id}_cam">${sc.build()}</g>`;root.appendChild(g);sc.el=g;sc.cam=g.querySelector('#'+sc.id+'_cam')}
+window.seek=T=>{for(let i=0;i<scenes.length;i++){const sc=scenes[i];const lt=T-sc.start;
+  const vis=lt>=-0.0001&&lt<sc.dur+FADE;sc.el.style.display=vis?'':'none';if(!vis)continue;
+  sc.el.setAttribute('opacity',i==0?1:k(lt,0,FADE,'inOut'));
+  const z=1+.045*k(lt,0,sc.dur+FADE,'lin');sc.cam.setAttribute('transform',`translate(960 540) scale(${z}) translate(-960 -540)`);
+  sc.seek(Math.max(0,lt),sc.dur)}};
+window.seek(0);
+</script></body></html>
