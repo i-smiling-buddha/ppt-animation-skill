@@ -81,10 +81,15 @@ function cloudSVG(id,s=1){return `<g id="${id}"><g transform="scale(${s})"><elli
 const label=(id,txt,size,fill='#fff',extra='')=>`<text id="${id}" text-anchor="middle" font-size="${size}" fill="${fill}" ${extra}>${txt}</text>`;
 
 // ---------- timing ----------
-const VO=__DUR__; // per-line voice durations
+const VO=__DUR__;        // seconds per narration line (filled in by build.py)
+const LINES=__LINES__;   // narration text per line, for captions (filled in by build.py; [] if none)
+const W=1920, H=1080;    // frame size (the vertical template uses 1080 x 1920)
+const CAPTIONS=true;     // burn word-chunk captions into the frames (set false to turn off)
 const LEAD=VO.map((_,i)=>i?0.2:0.6), TAIL=0.35, FADE=0.45; // silence before / after each line, crossfade
+const MIN={};            // optional minimum scene length by index, e.g. {2:16} to hold scene 2 for a 16 s clip
 const scenes=[];
-function scene(id,bg,build,seek){scenes.push({id,bg,build,seek})}
+// scene(id, bgGradientId, build, seek, {cam:false} to switch off the slow camera push-in for that scene)
+function scene(id,bg,build,seek,opts={}){scenes.push({id,bg,build,seek,cam:opts.cam!==false})}
 
 // ===== SCENES =====
 // scene(id, backgroundGradientId, build() -> svg string, seek(localTime, sceneDuration))
@@ -110,15 +115,31 @@ scene('s2','skyDeep',()=>starsSVG('s2st',160,71)+label('s2a','CHANNEL NAME',110,
 (t,D)=>{twinkle('s2st',t);const a=k(t,.2,.9,'outBack');set($('s2a'),{x:960,y:560,opacity:cl(a*2)*(1-k(t,D-.6,D))});});
 
 // ---------- master timeline ----------
-let tcur=0;scenes.forEach((sc,i)=>{sc.start=tcur;if(i<VO.length){sc.voAt=tcur+LEAD[i];sc.dur=LEAD[i]+VO[i]+TAIL}else sc.dur=3.2;tcur+=sc.dur});
+let tcur=0;scenes.forEach((sc,i)=>{sc.start=tcur;if(i<VO.length){sc.voAt=tcur+LEAD[i];sc.dur=Math.max(MIN[i]||0,LEAD[i]+VO[i]+TAIL)}else sc.dur=MIN[i]||3.2;tcur+=sc.dur});
 window.DURATION=tcur;window.TIMELINE=scenes.map(s=>({id:s.id,start:s.start,dur:s.dur,voAt:s.voAt}));
 const root=$('root');
 for(const sc of scenes){const g=document.createElementNS('http://www.w3.org/2000/svg','g');g.id=sc.id+'_wrap';
- g.innerHTML=`<rect width="1920" height="1080" fill="url(#${sc.bg})"/><g id="${sc.id}_cam">${sc.build()}</g>`;root.appendChild(g);sc.el=g;sc.cam=g.querySelector('#'+sc.id+'_cam')}
+ g.innerHTML=`<rect width="${W}" height="${H}" fill="url(#${sc.bg})"/><g id="${sc.id}_cam">${sc.build()}</g>`;root.appendChild(g);sc.el=g;sc.camEl=g.querySelector('#'+sc.id+'_cam')}
+
+// ---------- captions (chunked narration, timed by characters within each line) ----------
+const CAP_MAX=W>H?44:24, CAP_SIZE=W>H?44:54, CAP_Y=W>H?H-64:H-250;
+function chunkLine(s,max){const out=[];let cur='';for(const w of s.split(/\s+/).filter(Boolean)){const nxt=cur?cur+' '+w:w;
+ if(nxt.length>max&&cur){out.push(cur);cur=w}else cur=nxt;if(/[।.?!,;:]$/.test(w)&&cur.length>max*0.55){out.push(cur);cur=''}}if(cur)out.push(cur);return out}
+const CAPS=[];scenes.forEach((sc,i)=>{if(!LINES[i]||sc.voAt==null)return;const ch=chunkLine(LINES[i],CAP_MAX),tot=ch.reduce((a,c)=>a+c.length,0);let acc=0;
+ ch.forEach(c=>{const a=sc.voAt+VO[i]*acc/tot;acc+=c.length;CAPS.push({a,b:sc.voAt+VO[i]*acc/tot,text:c})})});
+window.CAPTION_CUES=CAPS;
+const cap=document.createElementNS('http://www.w3.org/2000/svg','g');
+cap.innerHTML=`<rect id="capbg" rx="18" fill="#0E1C2D" fill-opacity=".78"/><text id="captx" text-anchor="middle" font-size="${CAP_SIZE}" fill="#fff"></text>`;root.appendChild(cap);
+function drawCaption(T){const c=CAPTIONS&&(CAPS.find(c=>T>=c.a&&T<c.b)||CAPS.find(c=>T>=c.b&&T<c.b+0.12));cap.style.display=c?'':'none';if(!c)return;
+ const tx=$('captx');if(tx.textContent!==c.text)tx.textContent=c.text;set(tx,{x:W/2,y:CAP_Y});
+ const w=tx.getComputedTextLength();set($('capbg'),{x:W/2-w/2-28,y:CAP_Y-CAP_SIZE*1.05,width:w+56,height:CAP_SIZE*1.45});
+ cap.setAttribute('opacity',Math.min(k(T,c.a,c.a+.08,'lin'),1-k(T,c.b+.04,c.b+.12,'lin')))}
+
 window.seek=T=>{for(let i=0;i<scenes.length;i++){const sc=scenes[i];const lt=T-sc.start;
   const vis=lt>=-0.0001&&lt<sc.dur+FADE;sc.el.style.display=vis?'':'none';if(!vis)continue;
   sc.el.setAttribute('opacity',i==0?1:k(lt,0,FADE,'inOut'));
-  const z=1+.045*k(lt,0,sc.dur+FADE,'lin');sc.cam.setAttribute('transform',`translate(960 540) scale(${z}) translate(-960 -540)`);
-  sc.seek(Math.max(0,lt),sc.dur)}};
+  const z=sc.cam?1+.045*k(lt,0,sc.dur+FADE,'lin'):1;sc.camEl.setAttribute('transform',`translate(${W/2} ${H/2}) scale(${z}) translate(${-W/2} ${-H/2})`);
+  sc.seek(Math.max(0,lt),sc.dur)}
+ drawCaption(T)};
 window.seek(0);
 </script></body></html>

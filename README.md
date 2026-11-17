@@ -52,11 +52,12 @@ Choose your target agent when prompted. See the [Skills directory](https://skill
 | **Script** | Researches the topic, writes a hook → question → 3–5 beats → twist → takeaway script, one line per scene, and notes the source of every number |
 | **Voiceover** | Offline narration with [Kokoro TTS](https://github.com/thewh1teagle/kokoro-onnx). Hindi voices `hm_omega`, `hm_psi`, `hf_alpha`, `hf_beta` and many English voices, or your own recording |
 | **Voice-first timing** | Every narration line becomes one scene, and each scene's length follows its audio, so voice and visuals stay in sync |
-| **Scenes** | Animated SVG from a starter template: blob character (blinks, breathes, sleeps), brain, clouds, planets, twinkling stars, glow, gauges, counters, particle streams |
+| **Scenes** | Animated SVG from two starter templates (16:9 and 9:16 for Shorts/Reels): blob character (blinks, breathes, sleeps), brain, clouds, planets, twinkling stars, glow, gauges, counters, particle streams |
 | **Motion** | PowerPoint effects as code: fly-in, zoom/pop, spin, motion paths, draw-on, particle trails, crossfades between scenes and a slow camera push-in |
 | **Preview** | One frame per scene in a contact sheet, so layout problems are fixed *before* the long render |
 | **Render** | Playwright + ffmpeg, frame by frame, in parallel chunks, to a 30 fps H.264 MP4 (16:9 or 9:16) |
 | **Sound** | Voice placed on the timeline, an original synthesized ambient pad (copyright-free) and soft whooshes on scene changes, or your own licensed track |
+| **Captions** | Narration burned in as short caption chunks (Hindi conjuncts render correctly), plus an `.srt` file for YouTube subtitles |
 | **QA** | A contact sheet of the finished video to check clipping, safe area, readability and sync |
 
 ### Style built in
@@ -82,6 +83,17 @@ Ask your AI agent:
 Work happens in a `_work/` folder next to your scene file (build, chunks, timeline, mix), so a long job can be fixed and resumed scene by scene.
 
 ![Why We Sleep — frames from the finished video](docs/why-we-sleep-frames.jpg)
+
+## Showcase
+
+| Video | Format | Made with |
+|---|---|---|
+| **Why We Sleep** ([example](examples/why-we-sleep)) | 82 s · 16:9 · Hindi | 11 scenes, Kokoro `hm_omega` |
+| **PPT Animation Skill promo** ([example](examples/promo-short), [MP4 in v1.0.0](https://github.com/i-smiling-buddha/ppt-animation-skill/releases/tag/v1.0.0)) | 38 s · 9:16 · English | 5 scenes + real clips laid into a scene, Kokoro `am_michael` |
+
+<img src="docs/promo-short-preview.gif" width="270" alt="Promo Short preview">
+
+Made a video with this skill? Open a pull request and add it to this table.
 
 ## Run the pipeline without an AI agent
 
@@ -112,9 +124,10 @@ bash   $S/make_video.sh examples/why-we-sleep/video.html vo why_we_sleep.mp4
 | `peek.py` | One-frame-per-scene contact sheet before rendering |
 | `render.py` | Deterministic frame-range renderer |
 | `mix_audio.py` | Voice + synthesized pad + whooshes (or `--music your_track.mp3`) |
-| `make_video.sh` | Whole pipeline: build → parallel render → concat → mix → MP4 + QA sheet |
+| `captions.py` | `.srt` subtitles from the caption cues, for YouTube |
+| `make_video.sh` | Whole pipeline: build → parallel render → concat → mix → MP4 + QA sheet + `.srt` (detects 9:16 automatically) |
 
-To make your own video, copy `skills/infographic-explainer-video/templates/master_template.html`, write one `scene(...)` per narration line, and run the same two commands.
+To make your own video, copy `skills/infographic-explainer-video/templates/master_template.html` (16:9) or `vertical_template.html` (9:16), write one `scene(...)` per narration line, and run the same two commands.
 
 ## Compatibility
 

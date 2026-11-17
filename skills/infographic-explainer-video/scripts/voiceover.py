@@ -4,7 +4,7 @@ Usage:
   python3 voiceover.py lines.txt OUT_DIR [--voice hm_omega] [--lang hi] [--speed 1.05]
 
 lines.txt : one narration line per row (one line = one shot).
-Writes OUT_DIR/00.wav, 01.wav ... and OUT_DIR/dur.json (seconds per line).
+Writes OUT_DIR/00.wav, 01.wav ..., OUT_DIR/dur.json (seconds per line) and OUT_DIR/lines.json (the text, for captions).
 
 Model files (download once, ~120 MB total) into ./tts or set KOKORO_DIR:
   https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/kokoro-v1.0.int8.onnx
@@ -39,4 +39,5 @@ for i, line in enumerate(lines):
     durs.append(round(len(s) / sr, 3))
     print(f"{i:02d} {durs[-1]:.2f}s  {line[:50]}")
 json.dump(durs, open(os.path.join(a.out, "dur.json"), "w"))
+json.dump(lines, open(os.path.join(a.out, "lines.json"), "w", encoding="utf-8"), ensure_ascii=False)  # for captions
 print("total", round(sum(durs), 2), "s")

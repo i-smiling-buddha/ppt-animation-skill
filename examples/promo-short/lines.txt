@@ -1,0 +1,5 @@
+I typed one sentence into my AI agent.
+It researched the topic, wrote the script, recorded the voice, and animated every single scene.
+This is what it made. Eighty-two seconds, eleven scenes, from one prompt.
+No After Effects. No paid APIs. It's free, and open source.
+Search PPT Animation Skill on GitHub, and make your own.

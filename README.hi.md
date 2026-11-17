@@ -51,11 +51,12 @@ npx skills add i-smiling-buddha/ppt-animation-skill
 | **Script** | Topic पर research, फिर hook → सवाल → 3–5 बातें → twist → takeaway वाली script; हर scene की एक line, और हर number का source |
 | **Voiceover** | [Kokoro TTS](https://github.com/thewh1teagle/kokoro-onnx) से offline narration। Hindi voices `hm_omega`, `hm_psi`, `hf_alpha`, `hf_beta` और कई English voices, या आपकी अपनी recording |
 | **Voice-first timing** | हर narration line एक scene बनती है और scene की length उसके audio से तय होती है, इसलिए आवाज़ और visuals हमेशा sync रहते हैं |
-| **Scenes** | Starter template से animated SVG: blob character (पलकें झपकाता, साँस लेता, सोता है), brain, clouds, planets, चमकते तारे, glow, gauges, counters, particle streams |
+| **Scenes** | दो starter templates (16:9 और Shorts/Reels के लिए 9:16) से animated SVG: blob character (पलकें झपकाता, साँस लेता, सोता है), brain, clouds, planets, चमकते तारे, glow, gauges, counters, particle streams |
 | **Motion** | PowerPoint effects code में: fly-in, zoom/pop, spin, motion paths, draw-on, particle trails, scenes के बीच crossfade और धीमा camera push-in |
 | **Preview** | हर scene का एक frame एक grid में, ताकि लंबे render से *पहले* layout की गलतियाँ ठीक हो जाएँ |
 | **Render** | Playwright + ffmpeg से frame-by-frame, parallel chunks में, 30 fps H.264 MP4 (16:9 या 9:16) |
 | **Sound** | Timeline पर voice, code से बना original ambient music (copyright-free) और scene बदलने पर हल्के whooshes, या आपका अपना licensed track |
+| **Captions** | Narration छोटे-छोटे caption टुकड़ों में video पर दिखता है (Hindi के संयुक्ताक्षर सही render होते हैं), साथ में YouTube subtitles के लिए `.srt` file |
 | **QA** | तैयार video के frames की grid, ताकि clipping, safe area, readability और sync check हो सकें |
 
 ## Example tasks
@@ -72,6 +73,17 @@ npx skills add i-smiling-buddha/ppt-animation-skill
 सारा काम आपकी scene file के पास एक `_work/` folder में होता है (build, chunks, timeline, mix), इसलिए लंबा काम scene-by-scene ठीक करके फिर से चलाया जा सकता है।
 
 ![Why We Sleep — तैयार video के frames](docs/why-we-sleep-frames.jpg)
+
+## Showcase
+
+| Video | Format | कैसे बनी |
+|---|---|---|
+| **Why We Sleep** ([example](examples/why-we-sleep)) | 82 sec · 16:9 · Hindi | 11 scenes, Kokoro `hm_omega` |
+| **PPT Animation Skill promo** ([example](examples/promo-short), [v1.0.0 में MP4](https://github.com/i-smiling-buddha/ppt-animation-skill/releases/tag/v1.0.0)) | 38 sec · 9:16 · English | 5 scenes + एक scene में असली clips, Kokoro `am_michael` |
+
+<img src="docs/promo-short-preview.gif" width="270" alt="Promo Short preview">
+
+इस skill से कोई video बनाई? Pull request खोलकर उसे इस table में जोड़िए।
 
 ## बिना AI agent के pipeline चलाइए
 
@@ -95,7 +107,7 @@ python3 $S/voiceover.py examples/why-we-sleep/lines.txt vo --voice hm_omega --la
 bash   $S/make_video.sh examples/why-we-sleep/video.html vo why_we_sleep.mp4
 ```
 
-अपनी video बनाने के लिए `skills/infographic-explainer-video/templates/master_template.html` copy कीजिए, हर narration line के लिए एक `scene(...)` लिखिए, और यही दो commands चलाइए।
+अपनी video बनाने के लिए `skills/infographic-explainer-video/templates/master_template.html` (16:9) या `vertical_template.html` (9:16) copy कीजिए, हर narration line के लिए एक `scene(...)` लिखिए, और यही दो commands चलाइए।
 
 ## Compatibility
 
