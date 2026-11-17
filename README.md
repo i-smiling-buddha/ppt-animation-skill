@@ -3,6 +3,7 @@
 [![Stars](https://img.shields.io/github/stars/i-smiling-buddha/ppt-animation-skill?style=flat&label=STARS)](https://github.com/i-smiling-buddha/ppt-animation-skill/stargazers)
 [![License: MIT](https://img.shields.io/badge/LICENSE-MIT-blue)](LICENSE)
 [![Agent Skills](https://img.shields.io/badge/AGENT-SKILLS-8A2BE2)](https://agentskills.io)
+[![skills.sh](https://skills.sh/b/i-smiling-buddha/ppt-animation-skill)](https://skills.sh/i-smiling-buddha/ppt-animation-skill)
 [![Hindi + English](https://img.shields.io/badge/VOICE-HINDI%20%2B%20ENGLISH-01CB79)](#what-it-does)
 
 ![PPT Animation Skill infographic](ppt-animation-infographic.png)
