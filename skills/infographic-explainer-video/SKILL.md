@@ -1,6 +1,11 @@
 ---
 name: infographic-explainer-video
 description: Make Kurzgesagt / Infographics Show style animated explainer videos (flat-vector SVG art, motion graphics, voiceover, MP4) from a topic or script.
+license: MIT
+compatibility: Needs code execution with Python 3.10+, ffmpeg and headless Chromium (Playwright); one-time GitHub access to download the Kokoro voice model.
+metadata:
+  author: Smiling Buddha · DESITechnology
+  repository: https://github.com/i-smiling-buddha/ppt-animation-skill
 ---
 
 # Infographic Explainer Video
@@ -23,7 +28,7 @@ Talk to the user in their preferred language; keep code in English.
 | `scripts/mix_audio.py` | Places voice lines on the timeline, adds a code-synthesized (copyright-free) ambient pad + whooshes, or your own `--music`. |
 | `scripts/make_video.sh` | Whole pipeline: build → parallel render → concat → mix → mux → QA sheet. |
 
-A complete 82-second worked example (11 scenes, Hindi narration) lives in the repo at `examples/why-we-sleep/` — read it for scene ideas before writing new ones.
+A complete 82-second worked example (11 scenes, Hindi narration) lives in the repo at `examples/why-we-sleep/` (two folders above this skill folder) — read it for scene ideas before writing new ones.
 
 ## Setup (once)
 

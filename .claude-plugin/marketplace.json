@@ -1,0 +1,13 @@
+{
+  "name": "ppt-animation-skill",
+  "owner": { "name": "Smiling Buddha", "url": "https://desitechnology.com" },
+  "plugins": [
+    {
+      "name": "ppt-animation-skill",
+      "source": "./",
+      "description": "Kurzgesagt / Infographics Show style animated explainer videos made in code: script, offline voiceover, animated SVG scenes, 1080p MP4.",
+      "version": "1.0.0",
+      "license": "MIT"
+    }
+  ]
+}

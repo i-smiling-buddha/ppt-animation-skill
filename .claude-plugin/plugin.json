@@ -1,0 +1,10 @@
+{
+  "name": "ppt-animation-skill",
+  "version": "1.0.0",
+  "description": "Make Kurzgesagt / Infographics Show style animated explainer videos (flat-vector SVG art, motion graphics, offline Hindi + English voiceover, MP4) from a topic or script.",
+  "author": { "name": "Smiling Buddha", "url": "https://desitechnology.com" },
+  "homepage": "https://github.com/i-smiling-buddha/ppt-animation-skill",
+  "repository": "https://github.com/i-smiling-buddha/ppt-animation-skill",
+  "license": "MIT",
+  "keywords": ["explainer-video", "animation", "motion-graphics", "svg", "kurzgesagt-style", "text-to-video", "hindi", "agent-skills"]
+}
