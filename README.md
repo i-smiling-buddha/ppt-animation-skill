@@ -141,9 +141,9 @@ The agent needs **code execution** with Python, ffmpeg and a headless Chromium, 
 
 ## More free skills by Smiling Buddha
 
-- **[Smart Model Router Skill](https://github.com/i-smiling-buddha/smart-model-router-skill)**: save tokens and API credits. Your agent routes each coding task to the cheapest model that can reliably do it, verifies the result, and escalates only when it fails. `npx skills add i-smiling-buddha/smart-model-router-skill`
-- **[AI Image Recognition Skill](https://github.com/i-smiling-buddha/ai-image-recognition-skill)**: stop guessing from previews. Your agent checks real transparency (catches fake checkerboards), true format, size/DPI, colors, blur and GPS metadata in the actual image file. `npx skills add i-smiling-buddha/ai-image-recognition-skill`
-- **[Reflection Skill](https://github.com/i-smiling-buddha/reflection-skill)**: recreate any app, website, game or software clean-room, from recon and build to parity score, rebrand and launch. `npx skills add i-smiling-buddha/reflection-skill`
+- **[Smart Model Router Skill](https://github.com/i-smiling-buddha/smart-model-router-skill)** — save tokens and API credits: your agent routes each coding task to the cheapest model that can reliably do it, verifies the result, and escalates only when it fails. `npx skills add i-smiling-buddha/smart-model-router-skill`
+- **[AI Image Recognition Skill](https://github.com/i-smiling-buddha/ai-image-recognition-skill)** — stop guessing from previews: your agent checks real transparency (catches fake checkerboards), true format, size/DPI, colors, blur and GPS metadata in the actual image file. `npx skills add i-smiling-buddha/ai-image-recognition-skill`
+- **[Reflection Skill](https://github.com/i-smiling-buddha/reflection-skill)** — recreate any app, website, game or software, clean-room: your agent studies it from the outside, maps every screen, flow and data table, then builds a better version under your own brand. `npx skills add i-smiling-buddha/reflection-skill`
 
 ## Contributing
 
@@ -151,4 +151,4 @@ Issues, bug reports, new scene templates, palettes, example videos and pull requ
 
 ## License
 
-MIT. Made by **Smiling Buddha** · [DESITechnology](https://desitechnology.com).
+MIT. Made by [Smiling Buddha](https://github.com/i-smiling-buddha) · [DESITechnology](https://desitechnology.com).
