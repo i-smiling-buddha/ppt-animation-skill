@@ -137,6 +137,7 @@ Agent को Python, ffmpeg और headless Chromium के साथ **code exe
 - **[Smart Model Router Skill](https://github.com/i-smiling-buddha/smart-model-router-skill)** — tokens और API credits बचाइए: आपका agent हर coding task को उस सबसे सस्ते model पर भेजता है जो उसे भरोसे से कर सके, result verify करता है, और fail होने पर ही बड़े model पर जाता है। `npx skills add i-smiling-buddha/smart-model-router-skill`
 - **[AI Image Recognition Skill](https://github.com/i-smiling-buddha/ai-image-recognition-skill)** — preview देखकर अंदाज़ा मत लगाइए: आपका agent असली image file में transparency (नकली checkerboard भी पकड़ता है), असली format, size/DPI, colors, blur और GPS metadata check करता है। `npx skills add i-smiling-buddha/ai-image-recognition-skill`
 - **[Reflection Skill](https://github.com/i-smiling-buddha/reflection-skill)** — किसी भी app, website, game या software का clean-room तरीके से अपना version बनाइए: आपका agent उसे बाहर से study करता है, हर screen, flow और data table map करता है, फिर आपके अपने brand के साथ बेहतर version बनाता है। `npx skills add i-smiling-buddha/reflection-skill`
+- **[Countdown Video Skill](https://github.com/i-smiling-buddha/countdown-video-skill)** — कुछ भी rank करके countdown बनाइए: आपका agent sources के साथ ranking research करता है, फिर animated cards, trailer clips, music और YouTube chapters के साथ Top-N countdown या साल-दर-साल evolution videos render करता है। `npx skills add i-smiling-buddha/countdown-video-skill`
 
 ## Contributing
 
